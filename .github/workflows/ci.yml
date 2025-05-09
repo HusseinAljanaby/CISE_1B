@@ -30,7 +30,7 @@ jobs:
         working-directory: ./apps/frontend
         run: npm install
 
-      - name: Install dependencies for frontend
+      - name: Install dependencies for backend
         working-directory: ./apps/backend
         run: npm install
 
