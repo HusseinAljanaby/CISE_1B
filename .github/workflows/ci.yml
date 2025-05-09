@@ -34,9 +34,10 @@ jobs:
         working-directory: ./apps/backend
         run: npm install
 
-      - name: Run the tests for the frontend
-        working-directory: ./apps/frontend
-        run: npm test
+      #skip as we dont have any tests yet
+      # - name: Run the tests for the frontend
+      #   working-directory: ./apps/frontend
+      #   run: npm test
 
       - name: Run the tests for the backend
         working-directory: ./apps/backend
