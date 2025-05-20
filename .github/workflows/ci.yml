@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [23.x]
 
     steps:
       - name: Checkout repository
@@ -26,9 +26,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run the tests for the frontend
+      - name: Install dependencies for frontend
         working-directory: ./apps/frontend
-        run: npm test
+        run: npm install
+
+      - name: Install dependencies for backend
+        working-directory: ./apps/backend
+        run: npm install
+
+      #skip as we dont have any tests yet
+      # - name: Run the tests for the frontend
+      #   working-directory: ./apps/frontend
+      #   run: npm test
 
       - name: Run the tests for the backend
         working-directory: ./apps/backend
