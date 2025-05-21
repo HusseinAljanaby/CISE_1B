@@ -12,9 +12,9 @@ export class ArticleService {
     return await this.articleModel.create(dto);
   }
 
-  async findAll(query: any): Promise<Article[]> {
+  async find(query: any): Promise<Article[]> {
     if (query.all === 'true' || Object.keys(query).length === 0) {
-      return await this.articleModel.find().exec();
+      return await this.findAll();
     }
   
     const filter: any = {};
@@ -46,8 +46,10 @@ export class ArticleService {
   
     return await this.articleModel.find(filter).exec();
   }
-  
-  
+
+  async findAll(): Promise<Article[]> {
+    return await this.articleModel.find().exec();
+  }
 
   async findUnmoderated(): Promise<Article[]> {
     return await this.articleModel.find({ isModerated: false }).exec();

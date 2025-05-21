@@ -12,8 +12,8 @@ export class ArticleController {
   }
 
   @Get()
-  async findAll(@Query() query: any) {
-    return await this.articleService.findAll(query);
+  async find(@Query() query: any) {
+    return await this.articleService.find(query);
   }
 
   @Get('/unmoderated')
