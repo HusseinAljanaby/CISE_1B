@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import formStyles from "@/styles/Form.module.scss";
 import resultsStyles from "@/styles/Results.module.scss"
+import Header from "@/components/Header";
 
 const SearchArticles = () => {
   const [title, setTitle] = useState("");
@@ -75,7 +76,7 @@ const SearchArticles = () => {
 
   return (
     <div className={formStyles.container}>
-      <div className={formStyles.header}>SPEED</div>
+      <Header currentPage="search"/>
       <div className={formStyles.formWrapper}>
         <h1 style={{ fontSize: "2rem" }}>Search Articles</h1>
         <form className={formStyles.form} onSubmit={submitSearch}>
