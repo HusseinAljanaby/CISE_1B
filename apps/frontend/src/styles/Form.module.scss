@@ -1,6 +1,7 @@
 body, html {
     margin: 0;
     padding: 0;
+    color: #000000;
   }
 
   .container {
@@ -10,16 +11,7 @@ body, html {
     flex-direction: column;
     align-items: center;
   }
-  
-  .header {
-    width: 100%;
-    background-color: #0000ff;
-    color: white;
-    font-size: 1.8rem;
-    padding: 1rem;
-    margin: 0;
-    text-align: left;
-  }
+
  
   .formWrapper {
     background-color: white;
@@ -31,16 +23,25 @@ body, html {
     width: 1000px;
   }
 
+  .formWrapper h1 {
+    color: #4f3f3f
+  }
+
   .form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+  }
+
+  .form label {
+    color: #4c4c4c
   }
   
   .formItem {
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+    color: #000000;
   }
   
   .formTextArea {

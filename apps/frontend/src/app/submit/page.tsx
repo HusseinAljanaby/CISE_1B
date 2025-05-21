@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import formStyles from "@/styles/Form.module.scss";
+import Header from "@/components/Header";
 
 const NewDiscussion = () => {
   const [title, setTitle] = useState("");
@@ -79,7 +80,7 @@ const NewDiscussion = () => {
 
   return (
     <div className={formStyles.container}>
-      <div className={formStyles.header}>SPEED</div>
+      <Header currentPage="submit"/> 
       <div className={formStyles.formWrapper}>
         <h1 style={{ fontSize: "2rem" }}>New Article</h1>
         <form className={formStyles.form} onSubmit={submitNewArticle}>

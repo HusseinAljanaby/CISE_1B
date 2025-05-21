@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Query } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './create-article.dto';
 
@@ -12,8 +12,8 @@ export class ArticleController {
   }
 
   @Get()
-  async findAll() {
-    return await this.articleService.findAll();
+  async find(@Query() query: any) {
+    return await this.articleService.find(query);
   }
 
   @Get('/unmoderated')
