@@ -11,6 +11,7 @@ export class ArticleController {
     return await this.articleService.create(dto);
   }
 
+  @Get()
   async findAll(@Query() query: any) {
     return await this.articleService.findAll(query);
   }
