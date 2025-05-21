@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import formStyles from "@/styles/Form.module.scss";
-import resultsStyles from "@/styles/Results.module.scss"
+import resultsStyles from "@/styles/Results.module.scss";
 import Header from "@/components/Header";
 
 const SearchArticles = () => {
@@ -14,6 +14,11 @@ const SearchArticles = () => {
   const [results, setResults] = useState<any[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+
+  const [sortConfig, setSortConfig] = useState({
+    key: "title", //default sort by title
+    direction: "ascending" as "ascending" | "descending",
+  });
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
@@ -74,9 +79,23 @@ const SearchArticles = () => {
     setAuthors(authors.map((oldVal, i) => (i === index ? value : oldVal)));
   };
 
+  const sortResults = (key: string) => {
+    const direction =
+      sortConfig.key === key && sortConfig.direction === "ascending" ? "descending" : "ascending";
+
+    const sortedResults = [...results].sort((a, b) => {
+      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
+      return 0;
+    });
+
+    setResults(sortedResults);
+    setSortConfig({ key, direction });
+  };
+
   return (
     <div className={formStyles.container}>
-      <Header currentPage="search"/>
+      <Header currentPage="search" />
       <div className={formStyles.formWrapper}>
         <h1 style={{ fontSize: "2rem" }}>Search Articles</h1>
         <form className={formStyles.form} onSubmit={submitSearch}>
@@ -155,18 +174,34 @@ const SearchArticles = () => {
         {results.length > 0 && (
           <div>
             <h2 className={resultsStyles.resultsHeader}>Search Results</h2>
-            <ul>
-              {results.map((result) => (
-                <li key={result._id} className={resultsStyles.result}>
-                  <h3>{result.title}</h3>
-                  <p>Authors: {result.authors.join(", ")}</p>
-                  <p><a href={result.source}>[source link]</a></p>
-                  <p>DOI: {result.doi}</p>
-                  <p>Publication Year: {result.publication_year}</p>
-                  <p>{result.summary}</p>
-                </li>
-              ))}
-            </ul>
+            <table className={resultsStyles.resultsTable}>
+              <thead>
+                <tr>
+                  <th onClick={() => sortResults("title")}>Title {sortConfig.key === "title" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
+                  <th onClick={() => sortResults("authors")}>Authors {sortConfig.key === "authors" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
+                  <th onClick={() => sortResults("source")}>Source {sortConfig.key === "source" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
+                  <th onClick={() => sortResults("doi")}>DOI {sortConfig.key === "doi" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
+                  <th onClick={() => sortResults("publication_year")}>Publication Year {sortConfig.key === "publication_year" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
+                  <th onClick={() => sortResults("summary")}>Summary {sortConfig.key === "summary" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((result) => (
+                  <tr key={result._id}>
+                    <td>{result.title}</td>
+                    <td>{result.authors.join(", ")}</td>
+                    <td>
+                      <a href={result.source} target="_blank" rel="noopener noreferrer">
+                        [source link]
+                      </a>
+                    </td>
+                    <td>{result.doi}</td>
+                    <td>{result.publication_year}</td>
+                    <td>{result.summary}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

@@ -6,8 +6,76 @@
   margin-top: 1rem;
 }
 
+.resultsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resultsTable th,
+.resultsTable td {
+  padding: 12px 15px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.resultsTable th {
+  background-color: #f4f4f4;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.resultsTable td {
+  background-color: #fff;
+}
+
+.resultsTable tr:hover {
+  background-color: #f9f9f9;
+}
+
+.resultsTable a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.resultsTable a:hover {
+  text-decoration: underline;
+}
+
+.resultsTable .sortable-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resultsTable .sortable-header::after {
+  content: "⬇️";
+  font-size: 0.9rem;
+  margin-left: 5px;
+  display: inline-block;
+}
+
+.resultsTable th.sortable-header.asc::after {
+  content: "peepee";
+}
+
+.resultsTable th.sortable-header.desc::after {
+  content: "⬇";
+}
+
 .result {
   margin-top: 1rem;
   padding-bottom: 1ch;
   border-bottom: 1px dashed darkgrey;
+}
+
+.columnVisibilityControls {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.columnVisibilityControls label {
+  margin-bottom: 0.5rem;
 }
