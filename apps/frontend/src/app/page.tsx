@@ -66,7 +66,7 @@ export default function Home() {
         localStorage.setItem("user_id", data.email);
         localStorage.setItem("user_id", data.role);
         localStorage.setItem("user_id", data.access_token);
-        router.push(`./success`);
+        router.push(`./submit`);
       }
     } catch (error) {
       console.error(error);
@@ -99,7 +99,7 @@ export default function Home() {
         localStorage.setItem("user_id", data.email);
         localStorage.setItem("user_id", data.role);
         localStorage.setItem("user_id", data.access_token);
-        router.push(`./success`);
+        router.push(`./submit`);
       }
     } catch (error) {
       console.error(error);
@@ -108,9 +108,9 @@ export default function Home() {
   }
 
   return (
-    <div className="p-5 text-black flex flex-col w-full h-screen justify-center items-center bg-white">
-      <h1 className="text-5xl font-bold">
-        Software Empirical Evidence Database
+    <div className="p-5 text-black flex flex-col w-full h-screen justify-center items-center bg-white space-y-10">
+      <h1 className="p-5 text-5xl font-bold border shadow rounded-full">
+        Software Practice Empirical Evidence Database
       </h1>
       <div className="flex my-5 w-2/3 space-x-5">
         <form
