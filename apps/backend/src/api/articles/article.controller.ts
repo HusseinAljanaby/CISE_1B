@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -6,9 +7,10 @@ import {
   Param,
   Put,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { CreateArticleDto } from './create-article.dto';
+import { CreateArticleDto } from './dto/create-article.dto';
 
 @Controller('api/articles')
 export class ArticleController {

@@ -11,6 +11,7 @@ const SearchArticles = () => {
   const [source, setSource] = useState("");
   const [pubYear, setPubYear] = useState<number | "">("");
   const [doi, setDoi] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<any[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,13 @@ const SearchArticles = () => {
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
-    if (!title.trim() && authors.length === 0 && !source && !pubYear && !doi.trim()) {
+    if (
+      !title.trim() &&
+      authors.length === 0 &&
+      !source &&
+      !pubYear &&
+      !doi.trim()
+    ) {
       newErrors.title = "Please enter at least one search field";
     }
     setErrors(newErrors);
@@ -33,9 +40,13 @@ const SearchArticles = () => {
     const queryParams: string[] = [];
 
     if (title) queryParams.push(`title=${encodeURIComponent(title)}`);
-    if (authors.length > 0) authors.forEach((author) => queryParams.push(`authors[]=${encodeURIComponent(author)}`));
+    if (authors.length > 0)
+      authors.forEach((author) =>
+        queryParams.push(`authors[]=${encodeURIComponent(author)}`)
+      );
     if (source) queryParams.push(`source=${encodeURIComponent(source)}`);
-    if (pubYear) queryParams.push(`publication_year=${encodeURIComponent(pubYear)}`);
+    if (pubYear)
+      queryParams.push(`publication_year=${encodeURIComponent(pubYear)}`);
     if (doi) queryParams.push(`doi=${encodeURIComponent(doi)}`);
 
     return queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
@@ -49,9 +60,12 @@ const SearchArticles = () => {
 
     try {
       const queryString = buildQueryString();
-      const response = await fetch(`http://localhost:3001/api/articles${queryString}`, {
-        method: "GET",
-      });
+      const response = await fetch(
+        `http://localhost:3001/api/articles${queryString}`,
+        {
+          method: "GET",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to fetch articles: ${response.statusText}`);
@@ -81,7 +95,9 @@ const SearchArticles = () => {
 
   const sortResults = (key: string) => {
     const direction =
-      sortConfig.key === key && sortConfig.direction === "ascending" ? "descending" : "ascending";
+      sortConfig.key === key && sortConfig.direction === "ascending"
+        ? "descending"
+        : "ascending";
 
     const sortedResults = [...results].sort((a, b) => {
       if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
@@ -166,7 +182,11 @@ const SearchArticles = () => {
 
           {errors.title && <p className={formStyles.error}>{errors.title}</p>}
 
-          <button className={formStyles.buttonItem} type="submit" disabled={loading}>
+          <button
+            className={formStyles.buttonItem}
+            type="submit"
+            disabled={loading}
+          >
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
@@ -177,12 +197,54 @@ const SearchArticles = () => {
             <table className={resultsStyles.resultsTable}>
               <thead>
                 <tr>
-                  <th onClick={() => sortResults("title")}>Title {sortConfig.key === "title" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
-                  <th onClick={() => sortResults("authors")}>Authors {sortConfig.key === "authors" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
-                  <th onClick={() => sortResults("source")}>Source {sortConfig.key === "source" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
-                  <th onClick={() => sortResults("doi")}>DOI {sortConfig.key === "doi" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
-                  <th onClick={() => sortResults("publication_year")}>Publication Year {sortConfig.key === "publication_year" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
-                  <th onClick={() => sortResults("summary")}>Summary {sortConfig.key === "summary" ? (sortConfig.direction === "ascending" ? "↑" : "↓") : ""}</th>
+                  <th onClick={() => sortResults("title")}>
+                    Title{" "}
+                    {sortConfig.key === "title"
+                      ? sortConfig.direction === "ascending"
+                        ? "↑"
+                        : "↓"
+                      : ""}
+                  </th>
+                  <th onClick={() => sortResults("authors")}>
+                    Authors{" "}
+                    {sortConfig.key === "authors"
+                      ? sortConfig.direction === "ascending"
+                        ? "↑"
+                        : "↓"
+                      : ""}
+                  </th>
+                  <th onClick={() => sortResults("source")}>
+                    Source{" "}
+                    {sortConfig.key === "source"
+                      ? sortConfig.direction === "ascending"
+                        ? "↑"
+                        : "↓"
+                      : ""}
+                  </th>
+                  <th onClick={() => sortResults("doi")}>
+                    DOI{" "}
+                    {sortConfig.key === "doi"
+                      ? sortConfig.direction === "ascending"
+                        ? "↑"
+                        : "↓"
+                      : ""}
+                  </th>
+                  <th onClick={() => sortResults("publication_year")}>
+                    Publication Year{" "}
+                    {sortConfig.key === "publication_year"
+                      ? sortConfig.direction === "ascending"
+                        ? "↑"
+                        : "↓"
+                      : ""}
+                  </th>
+                  <th onClick={() => sortResults("summary")}>
+                    Summary{" "}
+                    {sortConfig.key === "summary"
+                      ? sortConfig.direction === "ascending"
+                        ? "↑"
+                        : "↓"
+                      : ""}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -191,7 +253,11 @@ const SearchArticles = () => {
                     <td>{result.title}</td>
                     <td>{result.authors.join(", ")}</td>
                     <td>
-                      <a href={result.source} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={result.source}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         [source link]
                       </a>
                     </td>
