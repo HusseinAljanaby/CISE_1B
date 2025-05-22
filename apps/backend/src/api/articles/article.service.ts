@@ -12,6 +12,40 @@ export class ArticleService {
   async create(dto: CreateArticleDto): Promise<Article> {
     return await this.articleModel.create(dto);
   }
+  async find(query: any): Promise<Article[]> {
+    if (query.all === 'true' || Object.keys(query).length === 0) {
+      return await this.findAll();
+    }
+  
+    const filter: any = {};
+  
+    if (query.title) {
+      filter.title = { $regex: query.title, $options: 'i' };
+    }
+
+    if (query['authors[]']) {
+      const authorsArray = Array.isArray(query['authors[]']) ? query['authors[]'] : [query['authors[]']];
+      
+      if (authorsArray.length > 0) {
+        filter.authors = { $in: authorsArray };
+      }
+    }
+  
+    if (query.source) {
+      filter.source = { $regex: query.source, $options: 'i' };
+    }
+    if (query.publication_year) {
+      filter.publication_year = query.publication_year;
+    }
+    if (query.doi) {
+      filter.doi = query.doi;
+    }
+  
+    console.log('Query:', query);
+    console.log('Filter:', filter);
+  
+    return await this.articleModel.find(filter).exec();
+  }
   async findAll(): Promise<Article[]> {
     return await this.articleModel.find().exec();
   }

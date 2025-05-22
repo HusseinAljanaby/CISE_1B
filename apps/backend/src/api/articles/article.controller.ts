@@ -18,8 +18,8 @@ export class ArticleController {
     return await this.articleService.create(dto);
   }
   @Get()
-  async findAll() {
-    return await this.articleService.findAll();
+  async find(@Query() query: any) {
+    return await this.articleService.find(query);
   }
   @Get('/reviewed')
   async findReviewed() {
