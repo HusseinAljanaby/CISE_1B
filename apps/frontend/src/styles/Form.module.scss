@@ -1,74 +1,66 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    color: #000000;
-  }
+.container {
+  background-color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .container {
-    background-color: #e0e0e0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+.formWrapper {
+  background-color: white;
+  padding: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 1000px;
+}
 
- 
-  .formWrapper {
-    background-color: white;
-    padding: 2rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    border-radius: 6px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 1000px;
-  }
+.formWrapper h1 {
+  color: #4f3f3f;
+}
 
-  .formWrapper h1 {
-    color: #4f3f3f
-  }
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+.form label {
+  color: #4c4c4c;
+}
 
-  .form label {
-    color: #4c4c4c
-  }
-  
-  .formItem {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    color: #000000;
-  }
-  
-  .formTextArea {
-    min-height: 80px;
-    padding: 0.5rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    resize: vertical;
-  }
-  
-  .buttonItem {
-    padding: 0.4rem 0.8rem;
-    background-color: #0070f3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .arrayItem {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .error {
-    color: red;
-    font-size: 0.875rem;
-  }
-  
+.formItem {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #000000;
+}
+
+.formTextArea {
+  min-height: 80px;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.buttonItem {
+  padding: 0.4rem 0.8rem;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.arrayItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+}

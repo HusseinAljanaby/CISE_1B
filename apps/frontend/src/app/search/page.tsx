@@ -61,7 +61,7 @@ const SearchArticles = () => {
     try {
       const queryString = buildQueryString();
       const response = await fetch(
-        `http://localhost:3001/api/articles${queryString}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/articles${queryString}`,
         {
           method: "GET",
         }

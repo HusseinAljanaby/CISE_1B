@@ -31,21 +31,24 @@ const NewDiscussion = () => {
     if (!validate()) return;
 
     try {
-      const response = await fetch("http://localhost:3001/api/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          authors,
-          source,
-          publication_year: pubYear,
-          doi,
-          summary,
-          linked_discussion: linkedDiscussion,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/articles`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            authors,
+            source,
+            publication_year: pubYear,
+            doi,
+            summary,
+            linked_discussion: linkedDiscussion,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to submit article: ${response.statusText}`);
@@ -80,7 +83,7 @@ const NewDiscussion = () => {
 
   return (
     <div className={formStyles.container}>
-      <Header currentPage="submit"/> 
+      <Header currentPage="submit" />
       <div className={formStyles.formWrapper}>
         <h1 style={{ fontSize: "2rem" }}>New Article</h1>
         <form className={formStyles.form} onSubmit={submitNewArticle}>
@@ -120,7 +123,9 @@ const NewDiscussion = () => {
           >
             +
           </button>
-          {errors.authors && <p className={formStyles.error}>{errors.authors}</p>}
+          {errors.authors && (
+            <p className={formStyles.error}>{errors.authors}</p>
+          )}
 
           <label htmlFor="source">Source:</label>
           <input
@@ -141,7 +146,9 @@ const NewDiscussion = () => {
               setPubYear(e.target.value === "" ? "" : parseInt(e.target.value))
             }
           />
-          {errors.pubYear && <p className={formStyles.error}>{errors.pubYear}</p>}
+          {errors.pubYear && (
+            <p className={formStyles.error}>{errors.pubYear}</p>
+          )}
 
           <label htmlFor="doi">DOI:</label>
           <input
