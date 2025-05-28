@@ -30,14 +30,14 @@ const Header: React.FC = () => {
     <div className={headerStyles.header}>
       SPEED
       <ul className={headerStyles.navList}>
+        <li className={currentPage === "articles" ? headerStyles.current : ""}>
+          <a onClick={() => router.push("/articles")}>All Articles</a>
+        </li>
         <li className={currentPage === "search" ? headerStyles.current : ""}>
           <a onClick={() => router.push("/search")}>Search</a>
         </li>
         <li className={currentPage === "submit" ? headerStyles.current : ""}>
           <a onClick={() => router.push("/submit")}>Submit</a>
-        </li>
-        <li className={currentPage === "articles" ? headerStyles.current : ""}>
-          <a onClick={() => router.push("/articles")}>All Articles</a>
         </li>
       </ul>
       <div className={headerStyles.userInfo}>
