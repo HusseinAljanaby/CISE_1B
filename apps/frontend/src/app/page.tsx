@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import landingStyles from "@/styles/Landing.module.scss";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -61,11 +62,13 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("user_id", data.first_name);
-        localStorage.setItem("user_id", data.last_name);
-        localStorage.setItem("user_id", data.email);
-        localStorage.setItem("user_id", data.role);
-        localStorage.setItem("user_id", data.access_token);
+
+        localStorage.setItem("user_id", data._id);
+        localStorage.setItem("first_name", data.first_name);
+        localStorage.setItem("last_name", data.last_name);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("access_token", data.access_token);
         router.push(`./submit`);
       }
     } catch (error) {
@@ -76,8 +79,6 @@ export default function Home() {
 
   async function handleLoginSubmit(e: any) {
     e.preventDefault();
-
-    console.log(loginFormData);
 
     if (!loginFormData.password || !loginFormData.email) {
       setLoginError("Please complete login form!");
@@ -94,11 +95,13 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("user_id", data.first_name);
-        localStorage.setItem("user_id", data.last_name);
-        localStorage.setItem("user_id", data.email);
-        localStorage.setItem("user_id", data.role);
-        localStorage.setItem("user_id", data.access_token);
+
+        localStorage.setItem("user_id", data._id);
+        localStorage.setItem("first_name", data.first_name);
+        localStorage.setItem("last_name", data.last_name);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("access_token", data.access_token);
         router.push(`./submit`);
       }
     } catch (error) {
@@ -107,90 +110,74 @@ export default function Home() {
     }
   }
 
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      router.push("/search");
+    }
+  }, [router]);
+
   return (
-    <div className="p-5 text-black flex flex-col w-full h-screen justify-center items-center bg-white space-y-10">
-      <h1 className="p-5 text-5xl font-bold border shadow rounded-full">
-        Software Practice Empirical Evidence Database
-      </h1>
-      <div className="flex my-5 w-2/3 space-x-5">
-        <form
-          className="w-1/2 flex flex-col space-y-3"
-          onSubmit={handleRegisterSubmit}
-        >
-          <h2>Register Here:</h2>
-          <input
-            type="text"
-            name="first_name"
-            className="bg-blue-200 text-gray-500 h-10 p-1 rounded"
-            value={registerFormData.first_name}
-            onChange={handleRegisterChange}
-            placeholder="First Name"
-          />
-          <input
-            type="text"
-            name="last_name"
-            className="bg-blue-200 text-gray-500 h-10 p-1 rounded"
-            value={registerFormData.last_name}
-            onChange={handleRegisterChange}
-            placeholder="Last Name"
-          />
-          <input
-            type="text"
-            name="email"
-            className="bg-blue-200 text-gray-500 h-10 p-1 rounded"
-            value={registerFormData.email}
-            onChange={handleRegisterChange}
-            placeholder="Email"
-          />
-          <input
-            type="password"
-            name="password"
-            className="bg-blue-200 text-gray-500 h-10 p-1 rounded"
-            value={registerFormData.password}
-            onChange={handleRegisterChange}
-            placeholder="Password"
-          />
-          <div className="w-full text-sm text-red-400">
-            <p>{registerError}</p>
-          </div>
-          <button
-            type="submit"
-            className="w-full h-16 bg-blue-500 hover:bg-blue-300 rounded-xl"
-          >
-            REGISTER
-          </button>
-        </form>
-        <form
-          className="w-1/2 flex flex-col space-y-3"
-          onSubmit={handleLoginSubmit}
-        >
-          <h2>Or login here:</h2>
-          <input
-            type="text"
-            name="email"
-            className="bg-blue-200 text-gray-500 h-10 p-1 rounded"
-            value={loginFormData.email}
-            onChange={handleLoginChange}
-            placeholder="Email"
-          />
-          <input
-            type="password"
-            name="password"
-            className="bg-blue-200 text-gray-500 h-10 p-1 rounded"
-            value={loginFormData.password}
-            onChange={handleLoginChange}
-            placeholder="Password"
-          />
-          <div className="w-full text-sm text-red-400">
-            <p>{loginError}</p>
-          </div>
-          <button
-            type="submit"
-            className="w-full h-16 bg-blue-500 hover:bg-blue-300 rounded-xl"
-          >
-            LOGIN
-          </button>
-        </form>
+    <div className={landingStyles.container}>
+      <div className={landingStyles.formWrapper}>
+        <h1>Software Practice Empirical Evidence Database</h1>
+        <div className="flex my-5 w-2/3 space-x-5">
+          <form className={landingStyles.form} onSubmit={handleRegisterSubmit}>
+            <h2>Register Here:</h2>
+            <input
+              type="text"
+              name="first_name"
+              value={registerFormData.first_name}
+              onChange={handleRegisterChange}
+              placeholder="First Name"
+            />
+            <input
+              type="text"
+              name="last_name"
+              value={registerFormData.last_name}
+              onChange={handleRegisterChange}
+              placeholder="Last Name"
+            />
+            <input
+              type="text"
+              name="email"
+              value={registerFormData.email}
+              onChange={handleRegisterChange}
+              placeholder="Email"
+            />
+            <input
+              type="password"
+              name="password"
+              value={registerFormData.password}
+              onChange={handleRegisterChange}
+              placeholder="Password"
+            />
+            <div className={landingStyles.error}>
+              <p>{registerError}</p>
+            </div>
+            <button type="submit">REGISTER</button>
+          </form>
+          <form className={landingStyles.form} onSubmit={handleLoginSubmit}>
+            <h2>Or login here:</h2>
+            <input
+              type="text"
+              name="email"
+              value={loginFormData.email}
+              onChange={handleLoginChange}
+              placeholder="Email"
+            />
+            <input
+              type="password"
+              name="password"
+              value={loginFormData.password}
+              onChange={handleLoginChange}
+              placeholder="Password"
+            />
+            <div className={landingStyles.error}>
+              <p>{loginError}</p>
+            </div>
+            <button type="submit">LOGIN</button>
+          </form>
+        </div>
       </div>
     </div>
   );

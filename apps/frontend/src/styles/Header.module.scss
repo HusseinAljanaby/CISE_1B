@@ -7,6 +7,8 @@
   margin: 0;
   text-align: left;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .navList {
@@ -16,10 +18,12 @@
   margin-left: 3rem;
   list-style: none;
   font-size: 1ch;
+  position: relative;
 }
 
-.navList li{
+.navList li {
   padding: 0.5rem;
+  cursor: pointer;
 }
 
 .current {
@@ -27,5 +31,27 @@
 }
 
 .navList li:hover {
-  color:#cfcfcf;
+  color: #cfcfcf;
+}
+
+.userInfo {
+  font-size: 1rem;
+  display: flex;
+  width: 66.66%;
+  align-items: center;
+  justify-content: right;
+}
+
+.role {
+  display: flex;
+  margin-inline: 1rem;
+}
+
+.logoutButton {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
 }

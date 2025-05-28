@@ -129,7 +129,6 @@ const SearchArticles = () => {
 
   return (
     <div className={formStyles.container}>
-      <Header currentPage="search" />
       <div className={formStyles.formWrapper}>
         <div className={formStyles.searchHeader}>
           <h1 style={{ fontSize: "2rem" }}>Search Articles</h1>
