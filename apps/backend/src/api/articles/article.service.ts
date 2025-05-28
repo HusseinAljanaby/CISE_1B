@@ -40,9 +40,18 @@ export class ArticleService {
     if (query.source) {
       filter.source = { $regex: query.source, $options: 'i' };
     }
-    if (query.publication_year) {
-      filter.publication_year = query.publication_year;
+
+    // Publication year range filtering
+    if (query.publication_year_start || query.publication_year_end) {
+      filter.publication_year = {};
+      if (query.publication_year_start) {
+        filter.publication_year.$gte = Number(query.publication_year_start);
+      }
+      if (query.publication_year_end) {
+        filter.publication_year.$lte = Number(query.publication_year_end);
+      }
     }
+
     if (query.doi) {
       filter.doi = query.doi;
     }
