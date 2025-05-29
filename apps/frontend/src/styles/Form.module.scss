@@ -27,56 +27,46 @@
   gap: 1rem;
 }
 
-.form label {
-  color: #4c4c4c;
-}
-
-.formItem {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  color: #111111;
-}
-
-.formTextArea {
-  min-height: 80px;
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  resize: vertical;
-  color: #111111;
-}
-
-.buttonItem {
-  padding: 0.4rem 0.8rem;
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.form button {
-  background-color: #5566ff;
-  border: 1px solid #0000ff;
-  cursor: pointer;
-  &:hover {
-    background-color: #6677ff;
+  .form label {
+    color: #4c4c4c
   }
-}
-
-.arrayItem {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.error {
-  color: red;
-  font-size: 0.875rem;
-}
-
-.leftAligned {
-  display: "flex";
-  justify-content: "flex-start";
-}
+  
+  .formItem {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #000000;
+  }
+  
+  .formTextArea {
+    min-height: 80px;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    resize: vertical;
+  }
+  
+  .buttonItem {
+    padding: 0.4rem 0.8rem;
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .arrayItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.875rem;
+  }
+  .searchHeader {
+    display: flex;
+    justify-content: space-between;
+  }
+  

@@ -81,3 +81,13 @@
 .columnVisibilityControls label {
   margin-bottom: 0.5rem;
 }
+
+.filterDropdown {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  z-index: 10;
+}

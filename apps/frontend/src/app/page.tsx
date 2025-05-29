@@ -69,7 +69,7 @@ export default function Home() {
         localStorage.setItem("email", data.email);
         localStorage.setItem("role", data.role);
         localStorage.setItem("access_token", data.access_token);
-        router.push(`./submit`);
+        router.push(`./articles`);
       }
     } catch (error) {
       console.error(error);
@@ -102,7 +102,7 @@ export default function Home() {
         localStorage.setItem("email", data.email);
         localStorage.setItem("role", data.role);
         localStorage.setItem("access_token", data.access_token);
-        router.push(`./submit`);
+        router.push(`./articles`);
       }
     } catch (error) {
       console.error(error);
@@ -112,7 +112,7 @@ export default function Home() {
 
   useEffect(() => {
     if (localStorage.getItem("access_token")) {
-      router.push("/search");
+      router.push("./articles");
     }
   }, [router]);
 
