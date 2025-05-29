@@ -26,6 +26,7 @@ const SearchSettings: React.FC<SearchSettings> = () => {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
+      color: 'black',
     },
   };
 
@@ -63,7 +64,20 @@ const SearchSettings: React.FC<SearchSettings> = () => {
         contentLabel="Example Modal"
       >
         <h2>Column Visibility</h2>
-        <button onClick={closeModal}>close</button>
+        <button
+          onClick={closeModal}
+          style={{
+            position: "absolute",
+            top: "1rem",
+            right: "1rem",
+            backgroundColor: "transparent",
+            border: "none",
+            fontSize: "1.2rem",
+            cursor: "pointer",
+          }}
+        >
+          ✕
+        </button>
         <div>
           {columnKeys.map((key) => (
             <div key={key}>

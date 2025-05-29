@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import formStyles from "@/styles/Form.module.scss";
 import resultsStyles from "@/styles/Results.module.scss";
 import SearchSettings from "@/components/SearchSettings";
+import LoadSearch from "@/components/LoadSearch";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
 
@@ -160,12 +161,52 @@ const SearchArticles = () => {
       });
   };
 
+  const saveSearch = () => {
+    const name = prompt("Enter a name for this search:");
+    if (!name) return;
+  
+    const searchState = {
+      title,
+      authors,
+      pubYearStart,
+      pubYearEnd,
+      doi,
+    };
+  
+    const existing = localStorage.getItem("saved_searches");
+    const saved_searches = existing ? JSON.parse(existing) : {};
+  
+    saved_searches[name] = searchState;
+    localStorage.setItem("saved_searches", JSON.stringify(saved_searches));
+    alert("Search saved!");
+  };
+  
+  const loadSearch = (searchState: {
+    title: string;
+    authors: string[];
+    pubYearStart: number | "";
+    pubYearEnd: number | "";
+    doi: string;
+  }) => {
+    setTitle(searchState.title);
+    setAuthors(searchState.authors);
+    setPubYearStart(searchState.pubYearStart);
+    setPubYearEnd(searchState.pubYearEnd);
+    setDoi(searchState.doi);
+  };
+
   return (
     <div className={formStyles.container}>
       <div className={formStyles.formWrapper}>
         <div className={formStyles.searchHeader}>
           <h1 style={{ fontSize: "2rem" }}>Search Articles</h1>
-          <SearchSettings />
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <button onClick={saveSearch} className={formStyles.buttonItem}>
+              save search
+            </button>
+            <LoadSearch callback={loadSearch} />
+            <SearchSettings />
+          </div>
         </div>
         <form className={formStyles.form} onSubmit={submitSearch}>
           <label htmlFor="title">Title:</label>
