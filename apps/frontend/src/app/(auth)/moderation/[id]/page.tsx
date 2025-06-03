@@ -19,9 +19,9 @@ interface Article {
   createdAt: string;
 }
 
-export default function ArticlePage() {
+export default function ModerationDetailPage() {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams(); 
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,16 +36,18 @@ export default function ArticlePage() {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const response = await fetch(
+        const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/articles/${params.id}`
         );
-        if (!response.ok) {
+        if (!res.ok) {
           throw new Error('Article not found');
         }
-        const data: Article = await response.json();
-        if (!data.isModerated || data.isRejected) {
+        const data: Article = await res.json();
+
+        if (data.isModerated || data.isRejected) {
           throw new Error('Article not available');
         }
+
         setArticle(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch article');
@@ -53,12 +55,14 @@ export default function ArticlePage() {
         setLoading(false);
       }
     };
+
     fetchArticle();
   }, [params.id]);
 
   if (loading) return <div>Loading…</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!article) return <div>Article not found or not approved.</div>;
+  if (error)   return <div className="text-red-600">Error: {error}</div>;
+
+  if (!article) return <div>Article not found or not pending.</div>;
 
   return (
     <div className={formStyles.formWrapper}>
@@ -85,9 +89,15 @@ export default function ArticlePage() {
         <h2 className="font-semibold">Summary</h2>
         <p>{article.summary}</p>
       </div>
+      {article.linked_discussion && (
+        <div className="mb-4">
+          <h2 className="font-semibold">Linked Discussion</h2>
+          <p>{article.linked_discussion}</p>
+        </div>
+      )}
       <div className="mt-6">
-        <Link href="/articles" className={formStyles.buttonItem}>
-          ← Back to Articles
+        <Link href="/moderation" className={formStyles.buttonItem}>
+          Back to Pending
         </Link>
       </div>
     </div>

@@ -8,25 +8,38 @@ import LoadSearch from "@/components/LoadSearch";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
 
+interface Article {
+  _id: string;
+  title: string;
+  authors: string[];
+  source: string;
+  publication_year: number;
+  doi: string;
+  summary: string;
+  claim?: string;
+  linked_discussion?: string;
+  isModerated: boolean;
+  isRejected: boolean;
+  createdAt: string;
+}
+
 const SearchArticles = () => {
   const [title, setTitle] = useState("");
   const [authors, setAuthors] = useState<string[]>([]);
   const [pubYearStart, setPubYearStart] = useState<number | "">("");
   const [pubYearEnd, setPubYearEnd] = useState<number | "">("");
   const [doi, setDoi] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<Article[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
   const [loading, setLoading] = useState(false);
 
-  //filters
   const [claimFilter, setClaimFilter] = useState<string | null>(null);
   const [yearFilter, setYearFilter] = useState<number | null>(null);
   const [showClaimFilter, setShowClaimFilter] = useState(false);
   const [showYearFilter, setShowYearFilter] = useState(false);
 
   const [sortConfig, setSortConfig] = useState({
-    key: "title", //default sort by title
+    key: "title" as keyof Article,
     direction: "ascending" as "ascending" | "descending",
   });
 
@@ -48,11 +61,15 @@ const SearchArticles = () => {
   const buildQueryString = () => {
     const queryParams: string[] = [];
 
+    queryParams.push(`isModerated=true`);
+    queryParams.push(`isRejected=false`);
+
     if (title) queryParams.push(`title=${encodeURIComponent(title)}`);
-    if (authors.length > 0)
+    if (authors.length > 0) {
       authors.forEach((author) =>
         queryParams.push(`authors[]=${encodeURIComponent(author)}`)
       );
+    }
     if (pubYearStart !== "")
       queryParams.push(`publication_year_start=${encodeURIComponent(pubYearStart)}`);
     if (pubYearEnd !== "")
@@ -69,8 +86,11 @@ const SearchArticles = () => {
     setLoading(true);
 
     try {
-      const queryString = buildQueryString();
-      const response = await fetch(`http://localhost:3001/api/articles${queryString}`, {
+      const base = process.env.NEXT_PUBLIC_API_BASE_URL!;
+      const queryString = buildQueryString(); 
+      const url = `${base}/api/articles${queryString}`;
+
+      const response = await fetch(url, {
         method: "GET",
       });
 
@@ -78,8 +98,12 @@ const SearchArticles = () => {
         throw new Error(`Failed to fetch articles: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      setResults(data);
+      const data: Article[] = await response.json();
+      const approvedOnly = data.filter(
+        (a) => a.isModerated === true && a.isRejected === false
+      );
+
+      setResults(approvedOnly);
       setLoading(false);
     } catch (error) {
       alert(error);
@@ -91,24 +115,24 @@ const SearchArticles = () => {
   const addAuthor = () => {
     setAuthors(authors.concat([""]));
   };
-
   const removeAuthor = (index: number) => {
     setAuthors(authors.filter((_, i) => i !== index));
   };
-
   const changeAuthor = (index: number, value: string) => {
     setAuthors(authors.map((oldVal, i) => (i === index ? value : oldVal)));
   };
 
-  const sortResults = (key: string) => {
+  const sortResults = (key: keyof Article) => {
     const direction =
       sortConfig.key === key && sortConfig.direction === "ascending"
         ? "descending"
         : "ascending";
 
     const sortedResults = [...results].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
+      const aVal = a[key] as any;
+      const bVal = b[key] as any;
+      if (aVal < bVal) return direction === "ascending" ? -1 : 1;
+      if (aVal > bVal) return direction === "ascending" ? 1 : -1;
       return 0;
     });
 
@@ -116,10 +140,18 @@ const SearchArticles = () => {
     setSortConfig({ key, direction });
   };
 
-  const columnKeys = ["title", "authors", "claim", "doi", "publication_year", "summary"];
+  const columnKeys: (keyof Article)[] = [
+    "title",
+    "authors",
+    "claim",
+    "doi",
+    "publication_year",
+    "summary",
+  ];
 
   const getInitialVisibility = () => {
-    if (typeof window === "undefined") return Object.fromEntries(columnKeys.map((k) => [k, true]));
+    if (typeof window === "undefined")
+      return Object.fromEntries(columnKeys.map((k) => [k, true]));
     const stored = localStorage.getItem("searchColumnVisibility");
     if (stored) return JSON.parse(stored);
     const defaultVisibility = Object.fromEntries(columnKeys.map((k) => [k, true]));
@@ -127,19 +159,22 @@ const SearchArticles = () => {
     return defaultVisibility;
   };
 
-  const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(getInitialVisibility);
+  const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(
+    getInitialVisibility
+  );
 
   React.useEffect(() => {
     const updateFromStorage = () => {
       const stored = localStorage.getItem("searchColumnVisibility");
       if (stored) {
         const parsed = JSON.parse(stored);
-        setVisibleColumns((prev) => (JSON.stringify(prev) !== JSON.stringify(parsed) ? parsed : prev));
+        setVisibleColumns((prev) =>
+          JSON.stringify(prev) !== JSON.stringify(parsed) ? parsed : prev
+        );
       }
     };
 
     const interval = setInterval(updateFromStorage, 250);
-
     window.addEventListener("storage", updateFromStorage);
 
     return () => {
@@ -148,7 +183,7 @@ const SearchArticles = () => {
     };
   }, []);
 
-  const applyFilters = (items: any[]) => {
+  const applyFilters = (items: Article[]) => {
     return items
       .filter((r) => (claimFilter ? r.claim === claimFilter : true))
       .filter((r) => {
@@ -164,7 +199,7 @@ const SearchArticles = () => {
   const saveSearch = () => {
     const name = prompt("Enter a name for this search:");
     if (!name) return;
-  
+
     const searchState = {
       title,
       authors,
@@ -172,15 +207,15 @@ const SearchArticles = () => {
       pubYearEnd,
       doi,
     };
-  
+
     const existing = localStorage.getItem("saved_searches");
     const saved_searches = existing ? JSON.parse(existing) : {};
-  
+
     saved_searches[name] = searchState;
     localStorage.setItem("saved_searches", JSON.stringify(saved_searches));
     alert("Search saved!");
   };
-  
+
   const loadSearch = (searchState: {
     title: string;
     authors: string[];
@@ -246,34 +281,34 @@ const SearchArticles = () => {
           </button>
 
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <label htmlFor="pubYearStart" style={{ margin: 0 }}>
-            Publication Year Start:
-          </label>
-          <input
-            className={formStyles.formItem}
-            type="number"
-            id="pubYearStart"
-            value={pubYearStart}
-            onChange={(e) =>
-              setPubYearStart(e.target.value === "" ? "" : parseInt(e.target.value))
-            }
-            style={{ flex: "1 1 0" }}
-          />
+            <label htmlFor="pubYearStart" style={{ margin: 0 }}>
+              Publication Year Start:
+            </label>
+            <input
+              className={formStyles.formItem}
+              type="number"
+              id="pubYearStart"
+              value={pubYearStart}
+              onChange={(e) =>
+                setPubYearStart(e.target.value === "" ? "" : parseInt(e.target.value))
+              }
+              style={{ flex: "1 1 0" }}
+            />
 
-          <label htmlFor="pubYearEnd" style={{ margin: 0 }}>
-            Publication Year End:
-          </label>
-          <input
-            className={formStyles.formItem}
-            type="number"
-            id="pubYearEnd"
-            value={pubYearEnd}
-            onChange={(e) =>
-              setPubYearEnd(e.target.value === "" ? "" : parseInt(e.target.value))
-            }
-            style={{ flex: "1 1 0" }}
-          />
-        </div>
+            <label htmlFor="pubYearEnd" style={{ margin: 0 }}>
+              Publication Year End:
+            </label>
+            <input
+              className={formStyles.formItem}
+              type="number"
+              id="pubYearEnd"
+              value={pubYearEnd}
+              onChange={(e) =>
+                setPubYearEnd(e.target.value === "" ? "" : parseInt(e.target.value))
+              }
+              style={{ flex: "1 1 0" }}
+            />
+          </div>
 
           <label htmlFor="doi">DOI:</label>
           <input
@@ -319,8 +354,13 @@ const SearchArticles = () => {
                   )}
                   {visibleColumns.claim && (
                     <th>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                        <div onClick={() => sortResults("claim")} style={{ cursor: "pointer" }}>
+                      <div
+                        style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
+                      >
+                        <div
+                          onClick={() => sortResults("claim")}
+                          style={{ cursor: "pointer" }}
+                        >
                           Claims{" "}
                           {sortConfig.key === "claim"
                             ? sortConfig.direction === "ascending"
@@ -332,7 +372,12 @@ const SearchArticles = () => {
                           onClick={() => setShowClaimFilter(!showClaimFilter)}
                           type="button"
                           aria-label="Toggle claim filter"
-                          style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: 0,
+                          }}
                         >
                           <FiFilter size={16} />
                         </button>
@@ -367,8 +412,13 @@ const SearchArticles = () => {
                   )}
                   {visibleColumns.publication_year && (
                     <th>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                        <div onClick={() => sortResults("publication_year")} style={{ cursor: "pointer" }}>
+                      <div
+                        style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
+                      >
+                        <div
+                          onClick={() => sortResults("publication_year")}
+                          style={{ cursor: "pointer" }}
+                        >
                           Publication Year{" "}
                           {sortConfig.key === "publication_year"
                             ? sortConfig.direction === "ascending"
@@ -380,7 +430,12 @@ const SearchArticles = () => {
                           onClick={() => setShowYearFilter(!showYearFilter)}
                           type="button"
                           aria-label="Toggle year filter"
-                          style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: 0,
+                          }}
                         >
                           <FiFilter size={16} />
                         </button>

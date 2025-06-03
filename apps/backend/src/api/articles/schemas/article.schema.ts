@@ -9,7 +9,7 @@ export class Article {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true, type: [String] }) // Array of authors
+  @Prop({ required: true, type: [String] }) 
   authors: string[];
 
   @Prop()
@@ -29,6 +29,9 @@ export class Article {
 
   @Prop({ default: false })
   isModerated: boolean;
+
+  @Prop({ default: false })
+  isRejected: boolean;
 
   @Prop({ default: Date.now })
   createdAt: Date;
