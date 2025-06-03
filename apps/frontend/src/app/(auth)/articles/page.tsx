@@ -13,7 +13,7 @@ interface Article {
   source: string;
   publication_year: number;
   doi: string;
-  summary: string;
+  abstract: string; 
   linked_discussion?: string;
   isModerated: boolean;
   isRejected: boolean;

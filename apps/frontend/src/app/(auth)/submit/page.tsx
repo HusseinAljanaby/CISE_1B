@@ -11,7 +11,7 @@ const NewDiscussion = () => {
   const [source, setSource] = useState("");
   const [pubYear, setPubYear] = useState<number | "">("");
   const [doi, setDoi] = useState("");
-  const [summary, setSummary] = useState("");
+  const [abstractText, setAbstractText] = useState("");
   const [linkedDiscussion, setLinkedDiscussion] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -51,7 +51,7 @@ const NewDiscussion = () => {
             source,
             publication_year: pubYear,
             doi,
-            summary,
+            abstract: abstractText,
             linked_discussion: linkedDiscussion,
           }),
         }
@@ -67,7 +67,7 @@ const NewDiscussion = () => {
       setSource("");
       setPubYear("");
       setDoi("");
-      setSummary("");
+      setAbstractText("");
       setLinkedDiscussion("");
       setErrors({});
     } catch (error) {
@@ -162,12 +162,12 @@ const NewDiscussion = () => {
         />
         {errors.doi && <p className={formStyles.error}>{errors.doi}</p>}
 
-        <label htmlFor="summary">Summary:</label>
+        <label htmlFor="abstract">Abstract:</label>
         <textarea
           className={formStyles.formTextArea}
-          name="summary"
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
+          name="abstract"
+          value={abstractText}
+          onChange={(e) => setAbstractText(e.target.value)}
         />
 
         <button className={formStyles.formItem} type="submit">

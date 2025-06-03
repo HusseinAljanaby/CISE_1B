@@ -22,7 +22,7 @@ export class Article {
   doi: string;
 
   @Prop()
-  summary: string;
+  abstract: string;
 
   @Prop()
   linked_discussion: string;

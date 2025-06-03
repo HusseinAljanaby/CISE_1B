@@ -12,7 +12,7 @@ interface Article {
   source: string;
   publication_year: number;
   doi: string;
-  summary: string;
+  abstract: string; 
   linked_discussion?: string;
   isModerated: boolean;
   isRejected: boolean;
@@ -64,7 +64,6 @@ export default function RejectedPage() {
               key={article._id}
               className="border p-4 mb-4 hover:shadow-lg transition-shadow"
             >
-              {}
               <h2 className="text-xl font-semibold mb-1">{article.title}</h2>
               <div className="text-sm text-gray-600">
                 <span className="font-medium">Author:</span>{' '}
