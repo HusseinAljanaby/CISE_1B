@@ -15,7 +15,7 @@ interface Article {
   source: string;
   publication_year: number;
   doi: string;
-  summary: string;
+  abstract: string;
   claim?: string;
   linked_discussion?: string;
   isModerated: boolean;
@@ -60,7 +60,6 @@ const SearchArticles = () => {
 
   const buildQueryString = () => {
     const queryParams: string[] = [];
-
     queryParams.push(`isModerated=true`);
     queryParams.push(`isRejected=false`);
 
@@ -87,7 +86,7 @@ const SearchArticles = () => {
 
     try {
       const base = process.env.NEXT_PUBLIC_API_BASE_URL!;
-      const queryString = buildQueryString(); 
+      const queryString = buildQueryString();
       const url = `${base}/api/articles${queryString}`;
 
       const response = await fetch(url, {
@@ -146,7 +145,7 @@ const SearchArticles = () => {
     "claim",
     "doi",
     "publication_year",
-    "summary",
+    "abstract",
   ];
 
   const getInitialVisibility = () => {
@@ -389,7 +388,7 @@ const SearchArticles = () => {
                             <button
                               key={claim}
                               onClick={() => {
-                                setClaimFilter(claim);
+                                setClaimFilter(claim ?? null);
                                 setShowClaimFilter(false);
                               }}
                             >
@@ -460,7 +459,16 @@ const SearchArticles = () => {
                       )}
                     </th>
                   )}
-                  {visibleColumns.summary && <th>Summary</th>}
+                  {visibleColumns.abstract && (
+                    <th onClick={() => sortResults("abstract")}>
+                      Abstract{" "}                     {}
+                      {sortConfig.key === "abstract"
+                        ? sortConfig.direction === "ascending"
+                          ? "↑"
+                          : "↓"
+                        : ""}
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -471,7 +479,7 @@ const SearchArticles = () => {
                     {visibleColumns.claim && <td>{result.claim}</td>}
                     {visibleColumns.doi && <td>{result.doi}</td>}
                     {visibleColumns.publication_year && <td>{result.publication_year}</td>}
-                    {visibleColumns.summary && <td>{result.summary}</td>}
+                    {visibleColumns.abstract && <td>{result.abstract}</td>} {}
                   </tr>
                 ))}
               </tbody>

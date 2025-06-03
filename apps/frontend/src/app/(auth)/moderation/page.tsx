@@ -13,7 +13,7 @@ interface Article {
   source: string;
   publication_year: number;
   doi: string;
-  summary: string;
+  abstract: string;
   linked_discussion?: string;
   isModerated: boolean;
   isRejected: boolean;
@@ -23,6 +23,10 @@ interface Article {
 export default function ModerationListPage() {
   const router = useRouter();
   const [pending, setPending] = useState<Article[]>([]);
+  const [allArticles, setAllArticles] = useState<Article[]>([]);
+  const [duplicates, setDuplicates] = useState<
+    Record<string, { titleDuplicate: boolean; doiDuplicate: boolean }>
+  >({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,16 +36,34 @@ export default function ModerationListPage() {
       return;
     }
 
-    const fetchPending = async () => {
+    const fetchPendingAndAll = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/articles/unmoderated`
-        );
-        if (!res.ok) {
+        const BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+        const resPend = await fetch(`${BASE}/api/articles/unmoderated`);
+        if (!resPend.ok) {
           throw new Error('Failed to fetch pending articles');
         }
-        const data: Article[] = await res.json();
-        setPending(data);
+        const pendData: Article[] = await resPend.json();
+        setPending(pendData);
+
+        const resAll = await fetch(`${BASE}/api/articles?all=true`);
+        if (!resAll.ok) {
+          throw new Error('Failed to fetch all articles');
+        }
+        const allData: Article[] = await resAll.json();
+        setAllArticles(allData);
+
+        const dupMap: Record<string, { titleDuplicate: boolean; doiDuplicate: boolean }> = {};
+        pendData.forEach((pend) => {
+          const titleDup = allData.some(
+            (a) => a._id !== pend._id && a.title.trim().toLowerCase() === pend.title.trim().toLowerCase()
+          );
+          const doiDup = allData.some(
+            (a) => a._id !== pend._id && a.doi.trim().toLowerCase() === pend.doi.trim().toLowerCase()
+          );
+          dupMap[pend._id] = { titleDuplicate: titleDup, doiDuplicate: doiDup };
+        });
+        setDuplicates(dupMap);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error loading data');
       } finally {
@@ -49,7 +71,7 @@ export default function ModerationListPage() {
       }
     };
 
-    fetchPending();
+    fetchPendingAndAll();
   }, [router]);
 
   const handleApprove = async (id: string) => {
@@ -106,43 +128,54 @@ export default function ModerationListPage() {
           <p>No pending articles.</p>
         ) : (
           <div className={resultsStyles.resultsTable}>
-            {pending.map((article) => (
-              <div
-                key={article._id}
-                className="border p-4 mb-4 hover:shadow-lg transition-shadow"
-              >
-                <Link href={`/moderation/${article._id}`}>
-                  <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
-                </Link>
-                <div className="text-sm text-gray-600 mb-2">
-                  <span className="font-medium">Author:</span>{' '}
-                  {article.authors.join(', ')}
+            {pending.map((article) => {
+              const dup = duplicates[article._id] || {
+                titleDuplicate: false,
+                doiDuplicate: false,
+              };
+              return (
+                <div
+                  key={article._id}
+                  className="border p-4 mb-4 hover:shadow-lg transition-shadow"
+                >
+                  <Link href={`/moderation/${article._id}`}>
+                    <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
+                  </Link>
+                  <div className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Author:</span>{' '}
+                    {article.authors.join(', ')}
+                  </div>
+                  <div className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Submitted At:</span>{' '}
+                    {new Date(article.createdAt).toLocaleString()}
+                  </div>
+                  {dup.titleDuplicate && (
+                    <p className="text-red-600 mb-1">Duplicate title detected</p>
+                  )}
+                  {dup.doiDuplicate && (
+                    <p className="text-red-600 mb-1">Duplicate DOI detected</p>
+                  )}
+                  <div className="flex space-x-2 mt-2">
+                    <button
+                      onClick={() => handleApprove(article._id)}
+                      className={`${formStyles.buttonItem} approveButton`}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleReject(article._id)}
+                      className={`${formStyles.buttonItem} rejectButton`}
+                    >
+                      Reject
+                    </button>
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600 mb-4">
-                  <span className="font-medium">Submitted At:</span>{' '}
-                  {new Date(article.createdAt).toLocaleString()}
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleApprove(article._id)}
-                    className={`${formStyles.buttonItem} approveButton`}
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleReject(article._id)}
-                    className={`${formStyles.buttonItem} rejectButton`}
-                  >
-                    Reject
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
 
-      {}
       <div style={{ marginBottom: '2rem' }}>
         <Link href="/moderation/rejected">
           <button className={formStyles.buttonItem}>View Rejected Articles</button>

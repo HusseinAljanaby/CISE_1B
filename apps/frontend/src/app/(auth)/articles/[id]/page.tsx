@@ -12,7 +12,7 @@ interface Article {
   source: string;
   publication_year: number;
   doi: string;
-  summary: string;
+  abstract: string;            
   linked_discussion?: string;
   isModerated: boolean;
   isRejected: boolean;
@@ -82,8 +82,8 @@ export default function ArticlePage() {
         <p>{article.doi}</p>
       </div>
       <div className="mb-4">
-        <h2 className="font-semibold">Summary</h2>
-        <p>{article.summary}</p>
+        <h2 className="font-semibold">Abstract</h2>
+        <p>{article.abstract}</p>      {}
       </div>
       <div className="mt-6">
         <Link href="/articles" className={formStyles.buttonItem}>
