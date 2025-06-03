@@ -13,9 +13,11 @@ export class ArticleService {
   constructor(
     @InjectModel(Article.name) private articleModel: Model<ArticleDocument>,
   ) {}
+
   async create(dto: CreateArticleDto): Promise<Article> {
     return await this.articleModel.create(dto);
   }
+
   async find(query: any): Promise<Article[]> {
     if (query.all === 'true' || Object.keys(query).length === 0) {
       return await this.findAll();
@@ -31,17 +33,11 @@ export class ArticleService {
       const authorsArray = Array.isArray(query['authors[]'])
         ? query['authors[]']
         : [query['authors[]']];
-
       if (authorsArray.length > 0) {
         filter.authors = { $in: authorsArray };
       }
     }
 
-    if (query.source) {
-      filter.source = { $regex: query.source, $options: 'i' };
-    }
-
-    // Publication year range filtering
     if (query.publication_year_start || query.publication_year_end) {
       filter.publication_year = {};
       if (query.publication_year_start) {
@@ -56,27 +52,49 @@ export class ArticleService {
       filter.doi = query.doi;
     }
 
-    console.log('Query:', query);
-    console.log('Filter:', filter);
+    if (typeof query.isModerated !== 'undefined') {
+      filter.isModerated = query.isModerated === 'true';
+    }
+
+    if (typeof query.isRejected !== 'undefined') {
+      filter.isRejected = query.isRejected === 'true';
+    }
 
     return await this.articleModel.find(filter).exec();
   }
+
   async findAll(): Promise<Article[]> {
     return await this.articleModel.find().exec();
   }
+
+  async findReviewed(): Promise<Article[]> {
+    return await this.articleModel.find({ isModerated: true, isRejected: false }).exec();
+  }
+
+  async findUnmoderated(): Promise<Article[]> {
+    return await this.articleModel.find({ isModerated: false, isRejected: false }).exec();
+  }
+
+  async findRejected(): Promise<Article[]> {
+    return await this.articleModel.find({ isRejected: true }).exec();
+  }
+
   async findById(id: string): Promise<Article | null> {
     return await this.articleModel.findById(id).exec();
   }
-  async findReviewed(): Promise<Article[]> {
-    return await this.articleModel.find({ isModerated: true }).exec();
-  }
-  async findUnmoderated(): Promise<Article[]> {
-    return await this.articleModel.find({ isModerated: false }).exec();
-  }
+
   async moderate(id: string): Promise<Article | null> {
     return await this.articleModel.findByIdAndUpdate(
       id,
-      { isModerated: true },
+      { isModerated: true, isRejected: false },
+      { new: true },
+    );
+  }
+
+  async reject(id: string): Promise<Article | null> {
+    return await this.articleModel.findByIdAndUpdate(
+      id,
+      { isModerated: false, isRejected: true },
       { new: true },
     );
   }

@@ -57,7 +57,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(registerFormData), // The data you want to send
+        body: JSON.stringify(registerFormData),
       });
 
       if (response.ok) {
@@ -90,7 +90,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(loginFormData), // The data you want to send
+        body: JSON.stringify(loginFormData), 
       });
 
       if (response.ok) {
