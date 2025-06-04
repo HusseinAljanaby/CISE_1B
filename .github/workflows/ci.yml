@@ -42,3 +42,11 @@ jobs:
       - name: Run the tests for the backend
         working-directory: ./apps/backend
         run: npm test
+
+      - name: Deploy frontend
+        working-directory: ./apps/frontend
+        run: vercel
+
+      - name: Deploy backend
+        working-directory: ./apps/backend
+        run: vercel
