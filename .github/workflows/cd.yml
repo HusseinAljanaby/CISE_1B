@@ -1,0 +1,37 @@
+name: Deploy to Vercel
+
+on:
+  workflow_run:
+    workflows: ["Run tests"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23
+
+      - name: Deploy backend to Vercel
+        working-directory: ./apps/backend
+        env:
+          VERCEL_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          npm install -g vercel
+          vercel --prod --token $VERCEL_TOKEN --yes
+
+      - name: Deploy frontend to Vercel
+        working-directory: ./apps/frontend
+        env:
+          VERCEL_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          npm install -g vercel
+          vercel --prod --token $VERCEL_TOKEN --yes
