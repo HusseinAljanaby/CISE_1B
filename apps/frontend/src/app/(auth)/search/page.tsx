@@ -483,7 +483,7 @@ const SearchArticles = () => {
                     {visibleColumns.claim && <td>{result.claim}</td>}
                     {visibleColumns.doi && <td>{result.doi}</td>}
                     {visibleColumns.publication_year && <td>{result.publication_year}</td>}
-                    {visibleColumns.abstract && <td>{result.abstract}</td>} {}
+                    {visibleColumns.abstract && <td>{result.abstract}</td>}
                   </tr>
                 ))}
               </tbody>
