@@ -25,7 +25,7 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          npm install -g vercel
+          npm install -g vercel nest
           npm run build
           vercel --prod --token $VERCEL_TOKEN --yes --cwd .
 
