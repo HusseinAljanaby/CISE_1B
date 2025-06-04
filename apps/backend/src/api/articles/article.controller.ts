@@ -54,12 +54,12 @@ export class ArticleController {
   }
 
   @Put('/:id/moderate')
-  async moderate(@Param('id') id: string): Promise<Article> {
+  async moderate(@Param('id') id: string): Promise<Article | null> {
     return await this.articleService.moderate(id);
   }
 
   @Put('/:id/reject')
-  async reject(@Param('id') id: string): Promise<Article> {
+  async reject(@Param('id') id: string): Promise<Article | null> {
     return await this.articleService.reject(id);
   }
 }
