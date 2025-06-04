@@ -127,13 +127,17 @@ const SearchArticles = () => {
         ? "descending"
         : "ascending";
 
-    const sortedResults = [...results].sort((a, b) => {
-      const aVal = a[key] as any;
-      const bVal = b[key] as any;
-      if (aVal < bVal) return direction === "ascending" ? -1 : 1;
-      if (aVal > bVal) return direction === "ascending" ? 1 : -1;
-      return 0;
-    });
+    
+    const sortedResults = [...results].sort(
+      //custom sort function to allow reversing direction if ascending or descending
+        (a, b) => {
+        const aVal = a[key] as any;
+        const bVal = b[key] as any;
+        if (aVal < bVal) return direction === "ascending" ? -1 : 1;
+        if (aVal > bVal) return direction === "ascending" ? 1 : -1;
+        return 0;
+      }
+    );
 
     setResults(sortedResults);
     setSortConfig({ key, direction });
