@@ -28,9 +28,8 @@ export class ArticleController {
   }
 
   @Get('/reviewed')
-  async findReviewed(@Query() query: any): Promise<Article[]> {
-    query.isModerated = 'true';
-    query.isRejected = 'false';
+  async findReviewed(): Promise<Article[]> {
+    const query = { isModerated: true, isRejected:false};
     return await this.articleService.find(query);
   }
 
@@ -55,11 +54,19 @@ export class ArticleController {
 
   @Put('/:id/moderate')
   async moderate(@Param('id') id: string): Promise<Article> {
-    return await this.articleService.moderate(id);
+    const updated = await this.articleService.moderate(id);
+    if (!updated) {
+      throw new NotFoundException(`Cannot moderate: article ${id} not found`);
+    }
+    return updated;
   }
 
   @Put('/:id/reject')
   async reject(@Param('id') id: string): Promise<Article> {
-    return await this.articleService.reject(id);
+    const updated = await this.articleService.reject(id);
+    if (!updated) {
+      throw new NotFoundException(`Cannot reject: article ${id} not found`);
+    }
+    return updated;
   }
 }
