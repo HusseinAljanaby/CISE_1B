@@ -31,7 +31,7 @@ jobs:
       - name: Deploy frontend to Vercel
         working-directory: ./apps/frontend
         env:
-          VERCEL_TOKEN: ${{ secrets.SECRET }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           npm install -g vercel
-          vercel --prod --token $SECRET --yes
+          vercel --prod --token $VERCEL_TOKEN --yes
