@@ -15,7 +15,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: [23.x]
+          node-version: 23
 
       - name: Install Vercel
         run: npm install -g vercel
