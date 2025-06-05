@@ -38,8 +38,11 @@ export default function AnalysisDetailPage() {
   const [linkedDiscussion, setLinkedDiscussion] = useState('');
 
   useEffect(() => {
-    if (!localStorage.getItem('access_token')) {
-      router.push('/');
+    const token = localStorage.getItem("access_token");
+    const role = localStorage.getItem("role");
+
+    if (!token || (role !== "ANALYST" && role !== "ADMIN")) {
+      router.push("/");
       return;
     }
   }, [router]);
