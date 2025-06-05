@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import formStyles from '@/styles/Form.module.scss';
-import resultsStyles from '@/styles/Results.module.scss';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import formStyles from "@/styles/Form.module.scss";
+import resultsStyles from "@/styles/Results.module.scss";
+import { useRouter } from "next/navigation";
 
 interface Article {
   _id: string;
@@ -13,7 +13,7 @@ interface Article {
   source: string;
   publication_year: number;
   doi: string;
-  abstract: string; 
+  abstract: string;
   linked_discussion?: string;
   isModerated: boolean;
   isRejected: boolean;
@@ -27,8 +27,8 @@ export default function ArticlesPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!localStorage.getItem('access_token')) {
-      router.push('/');
+    if (!localStorage.getItem("access_token")) {
+      router.push("/");
       return;
     }
   }, [router]);
@@ -40,12 +40,14 @@ export default function ArticlesPage() {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/articles/reviewed`
         );
         if (!response.ok) {
-          throw new Error('Failed to fetch articles');
+          throw new Error("Failed to fetch articles");
         }
         const data = await response.json();
         setArticles(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch articles');
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch articles"
+        );
       } finally {
         setLoading(false);
       }
@@ -58,7 +60,7 @@ export default function ArticlesPage() {
 
   return (
     <div className={formStyles.formWrapper}>
-      <h1 style={{ fontSize: '2rem' }}>Approved Articles</h1>
+      <h1 style={{ fontSize: "2rem" }}>Approved Articles</h1>
       {articles.length === 0 ? (
         <p>No approved articles yet.</p>
       ) : (
@@ -71,15 +73,31 @@ export default function ArticlesPage() {
               <Link href={`/articles/${article._id}`}>
                 <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
                 <div className="text-sm text-gray-600 mb-2">
-                  Authors: {article.authors.join(', ')}
+                  Authors: {article.authors.join(", ")}
                 </div>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
-                    <span className="font-medium">Publication Year:</span>{' '}
+                    <span className="font-medium">Publication Year:</span>{" "}
                     {article.publication_year}
                   </div>
                   <div>
-                    <span className="font-medium">Source:</span> {article.source}
+                    <span className="font-medium">Source:</span>{" "}
+                    {article.source}
+                  </div>
+                  <div>
+                    {article.isRejected ? (
+                      <span className="text-red-500 font-bold">
+                        ARTICLE IS REJECTED
+                      </span>
+                    ) : article.isModerated ? (
+                      <span className="text-green-600 font-bold">
+                        ARTICLE IS MODERATED
+                      </span>
+                    ) : (
+                      <span className="text-orange-500 font-bold">
+                        ARTICLE IS NOT MODERATED
+                      </span>
+                    )}
                   </div>
                 </div>
               </Link>
