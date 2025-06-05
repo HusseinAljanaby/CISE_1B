@@ -30,6 +30,8 @@ const SearchArticles = () => {
   const [pubYearStart, setPubYearStart] = useState<number | "">("");
   const [pubYearEnd, setPubYearEnd] = useState<number | "">("");
   const [doi, setDoi] = useState("");
+  const [practice, setPractice] = useState("");
+  const [searchClaim, setSearchClaim] = useState("");
   const [results, setResults] = useState<Article[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
@@ -79,6 +81,9 @@ const SearchArticles = () => {
         `publication_year_end=${encodeURIComponent(pubYearEnd)}`
       );
     if (doi) queryParams.push(`doi=${encodeURIComponent(doi)}`);
+    if (practice) queryParams.push(`practice=${encodeURIComponent(practice)}`);
+    if (searchClaim)
+      queryParams.push(`claim=${encodeURIComponent(searchClaim)}`);
 
     return queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
   };
@@ -335,6 +340,23 @@ const SearchArticles = () => {
             id="doi"
             value={doi}
             onChange={(e) => setDoi(e.target.value)}
+          />
+
+          <label htmlFor="practice">Practice:</label>
+          <input
+            className={formStyles.formItem}
+            type="text"
+            id="practice"
+            value={practice}
+            onChange={(e) => setPractice(e.target.value)}
+          />
+          <label htmlFor="searchClaim">Claim:</label>
+          <input
+            className={formStyles.formItem}
+            type="text"
+            id="searchClaim"
+            value={searchClaim}
+            onChange={(e) => setSearchClaim(e.target.value)}
           />
 
           {errors.title && <p className={formStyles.error}>{errors.title}</p>}
