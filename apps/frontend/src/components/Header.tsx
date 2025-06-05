@@ -39,6 +39,11 @@ const Header: React.FC = () => {
         <li className={currentPage === "submit" ? headerStyles.current : ""}>
           <a onClick={() => router.push("/submit")}>Submit</a>
         </li>
+        {role === "ADMIN" ? (
+          <li className={currentPage === "admin" ? headerStyles.current : ""}>
+            <a onClick={() => router.push("/admin")}>Admin</a>
+          </li>
+        ) : null}
       </ul>
       <div className={headerStyles.userInfo}>
         <p className={headerStyles.role}>User type: {role ?? "Loading..."}</p>

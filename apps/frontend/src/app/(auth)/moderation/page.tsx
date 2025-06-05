@@ -1,10 +1,11 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import formStyles from '@/styles/Form.module.scss';
-import resultsStyles from '@/styles/Results.module.scss';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import formStyles from "@/styles/Form.module.scss";
+import resultsStyles from "@/styles/Results.module.scss";
 
 interface Article {
   _id: string;
@@ -31,8 +32,8 @@ export default function ModerationListPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!localStorage.getItem('access_token')) {
-      router.push('/');
+    if (!localStorage.getItem("access_token")) {
+      router.push("/");
       return;
     }
 
@@ -41,31 +42,38 @@ export default function ModerationListPage() {
         const BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
         const resPend = await fetch(`${BASE}/api/articles/unmoderated`);
         if (!resPend.ok) {
-          throw new Error('Failed to fetch pending articles');
+          throw new Error("Failed to fetch pending articles");
         }
         const pendData: Article[] = await resPend.json();
         setPending(pendData);
 
         const resAll = await fetch(`${BASE}/api/articles?all=true`);
         if (!resAll.ok) {
-          throw new Error('Failed to fetch all articles');
+          throw new Error("Failed to fetch all articles");
         }
         const allData: Article[] = await resAll.json();
         setAllArticles(allData);
 
-        const dupMap: Record<string, { titleDuplicate: boolean; doiDuplicate: boolean }> = {};
+        const dupMap: Record<
+          string,
+          { titleDuplicate: boolean; doiDuplicate: boolean }
+        > = {};
         pendData.forEach((pend) => {
           const titleDup = allData.some(
-            (a) => a._id !== pend._id && a.title.trim().toLowerCase() === pend.title.trim().toLowerCase()
+            (a) =>
+              a._id !== pend._id &&
+              a.title.trim().toLowerCase() === pend.title.trim().toLowerCase()
           );
           const doiDup = allData.some(
-            (a) => a._id !== pend._id && a.doi.trim().toLowerCase() === pend.doi.trim().toLowerCase()
+            (a) =>
+              a._id !== pend._id &&
+              a.doi.trim().toLowerCase() === pend.doi.trim().toLowerCase()
           );
           dupMap[pend._id] = { titleDuplicate: titleDup, doiDuplicate: doiDup };
         });
         setDuplicates(dupMap);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error loading data');
+        setError(err instanceof Error ? err.message : "Error loading data");
       } finally {
         setLoading(false);
       }
@@ -79,9 +87,9 @@ export default function ModerationListPage() {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/articles/${id}/moderate`,
         {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
@@ -91,7 +99,7 @@ export default function ModerationListPage() {
       }
       setPending((prev) => prev.filter((a) => a._id !== id));
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Error while approving');
+      alert(err instanceof Error ? err.message : "Error while approving");
     }
   };
 
@@ -100,9 +108,9 @@ export default function ModerationListPage() {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/articles/${id}/reject`,
         {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
@@ -112,7 +120,7 @@ export default function ModerationListPage() {
       }
       setPending((prev) => prev.filter((a) => a._id !== id));
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Error while rejecting');
+      alert(err instanceof Error ? err.message : "Error while rejecting");
     }
   };
 
@@ -122,7 +130,7 @@ export default function ModerationListPage() {
   return (
     <div className="container">
       <div className={formStyles.formWrapper}>
-        <h1 style={{ fontSize: '2rem' }}>Pending Articles</h1>
+        <h1 style={{ fontSize: "2rem" }}>Pending Articles</h1>
 
         {pending.length === 0 ? (
           <p>No pending articles.</p>
@@ -139,18 +147,22 @@ export default function ModerationListPage() {
                   className="border p-4 mb-4 hover:shadow-lg transition-shadow"
                 >
                   <Link href={`/moderation/${article._id}`}>
-                    <h2 className="text-xl font-semibold mb-2">{article.title}</h2>
+                    <h2 className="text-xl font-semibold mb-2">
+                      {article.title}
+                    </h2>
                   </Link>
                   <div className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium">Author:</span>{' '}
-                    {article.authors.join(', ')}
+                    <span className="font-medium">Author:</span>{" "}
+                    {article.authors.join(", ")}
                   </div>
                   <div className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium">Submitted At:</span>{' '}
+                    <span className="font-medium">Submitted At:</span>{" "}
                     {new Date(article.createdAt).toLocaleString()}
                   </div>
                   {dup.titleDuplicate && (
-                    <p className="text-red-600 mb-1">Duplicate title detected</p>
+                    <p className="text-red-600 mb-1">
+                      Duplicate title detected
+                    </p>
                   )}
                   {dup.doiDuplicate && (
                     <p className="text-red-600 mb-1">Duplicate DOI detected</p>
@@ -176,9 +188,11 @@ export default function ModerationListPage() {
         )}
       </div>
 
-      <div style={{ marginBottom: '2rem' }}>
+      <div style={{ marginBottom: "2rem" }}>
         <Link href="/moderation/rejected">
-          <button className={formStyles.buttonItem}>View Rejected Articles</button>
+          <button className={formStyles.buttonItem}>
+            View Rejected Articles
+          </button>
         </Link>
       </div>
     </div>

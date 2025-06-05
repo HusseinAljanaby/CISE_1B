@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { FormEvent, useState } from "react";
@@ -70,9 +71,13 @@ const SearchArticles = () => {
       );
     }
     if (pubYearStart !== "")
-      queryParams.push(`publication_year_start=${encodeURIComponent(pubYearStart)}`);
+      queryParams.push(
+        `publication_year_start=${encodeURIComponent(pubYearStart)}`
+      );
     if (pubYearEnd !== "")
-      queryParams.push(`publication_year_end=${encodeURIComponent(pubYearEnd)}`);
+      queryParams.push(
+        `publication_year_end=${encodeURIComponent(pubYearEnd)}`
+      );
     if (doi) queryParams.push(`doi=${encodeURIComponent(doi)}`);
 
     return queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
@@ -127,10 +132,9 @@ const SearchArticles = () => {
         ? "descending"
         : "ascending";
 
-    
     const sortedResults = [...results].sort(
       //custom sort function to allow reversing direction if ascending or descending
-        (a, b) => {
+      (a, b) => {
         const aVal = a[key] as any;
         const bVal = b[key] as any;
         if (aVal < bVal) return direction === "ascending" ? -1 : 1;
@@ -157,14 +161,18 @@ const SearchArticles = () => {
       return Object.fromEntries(columnKeys.map((k) => [k, true]));
     const stored = localStorage.getItem("searchColumnVisibility");
     if (stored) return JSON.parse(stored);
-    const defaultVisibility = Object.fromEntries(columnKeys.map((k) => [k, true]));
-    localStorage.setItem("searchColumnVisibility", JSON.stringify(defaultVisibility));
+    const defaultVisibility = Object.fromEntries(
+      columnKeys.map((k) => [k, true])
+    );
+    localStorage.setItem(
+      "searchColumnVisibility",
+      JSON.stringify(defaultVisibility)
+    );
     return defaultVisibility;
   };
 
-  const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(
-    getInitialVisibility
-  );
+  const [visibleColumns, setVisibleColumns] =
+    useState<Record<string, boolean>>(getInitialVisibility);
 
   React.useEffect(() => {
     const updateFromStorage = () => {
@@ -192,7 +200,10 @@ const SearchArticles = () => {
       .filter((r) => {
         if (yearFilter) return r.publication_year === yearFilter;
         if (pubYearStart !== "" && pubYearEnd !== "")
-          return r.publication_year >= pubYearStart && r.publication_year <= pubYearEnd;
+          return (
+            r.publication_year >= pubYearStart &&
+            r.publication_year <= pubYearEnd
+          );
         if (pubYearStart !== "") return r.publication_year >= pubYearStart;
         if (pubYearEnd !== "") return r.publication_year <= pubYearEnd;
         return true;
@@ -293,7 +304,9 @@ const SearchArticles = () => {
               id="pubYearStart"
               value={pubYearStart}
               onChange={(e) =>
-                setPubYearStart(e.target.value === "" ? "" : parseInt(e.target.value))
+                setPubYearStart(
+                  e.target.value === "" ? "" : parseInt(e.target.value)
+                )
               }
               style={{ flex: "1 1 0" }}
             />
@@ -307,7 +320,9 @@ const SearchArticles = () => {
               id="pubYearEnd"
               value={pubYearEnd}
               onChange={(e) =>
-                setPubYearEnd(e.target.value === "" ? "" : parseInt(e.target.value))
+                setPubYearEnd(
+                  e.target.value === "" ? "" : parseInt(e.target.value)
+                )
               }
               style={{ flex: "1 1 0" }}
             />
@@ -324,7 +339,11 @@ const SearchArticles = () => {
 
           {errors.title && <p className={formStyles.error}>{errors.title}</p>}
 
-          <button className={formStyles.buttonItem} type="submit" disabled={loading}>
+          <button
+            className={formStyles.buttonItem}
+            type="submit"
+            disabled={loading}
+          >
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
@@ -358,7 +377,11 @@ const SearchArticles = () => {
                   {visibleColumns.claim && (
                     <th>
                       <div
-                        style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                        }}
                       >
                         <div
                           onClick={() => sortResults("claim")}
@@ -387,18 +410,22 @@ const SearchArticles = () => {
                       </div>
                       {showClaimFilter && (
                         <div className={resultsStyles.filterDropdown}>
-                          <button onClick={() => setClaimFilter(null)}>All</button>
-                          {[...new Set(results.map((r) => r.claim))].map((claim) => (
-                            <button
-                              key={claim}
-                              onClick={() => {
-                                setClaimFilter(claim ?? null);
-                                setShowClaimFilter(false);
-                              }}
-                            >
-                              {claim}
-                            </button>
-                          ))}
+                          <button onClick={() => setClaimFilter(null)}>
+                            All
+                          </button>
+                          {[...new Set(results.map((r) => r.claim))].map(
+                            (claim) => (
+                              <button
+                                key={claim}
+                                onClick={() => {
+                                  setClaimFilter(claim ?? null);
+                                  setShowClaimFilter(false);
+                                }}
+                              >
+                                {claim}
+                              </button>
+                            )
+                          )}
                         </div>
                       )}
                     </th>
@@ -416,7 +443,11 @@ const SearchArticles = () => {
                   {visibleColumns.publication_year && (
                     <th>
                       <div
-                        style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                        }}
                       >
                         <div
                           onClick={() => sortResults("publication_year")}
@@ -445,7 +476,9 @@ const SearchArticles = () => {
                       </div>
                       {showYearFilter && (
                         <div className={resultsStyles.filterDropdown}>
-                          <button onClick={() => setYearFilter(null)}>All</button>
+                          <button onClick={() => setYearFilter(null)}>
+                            All
+                          </button>
                           {[...new Set(results.map((r) => r.publication_year))]
                             .sort((a, b) => a - b)
                             .map((year) => (
@@ -465,7 +498,7 @@ const SearchArticles = () => {
                   )}
                   {visibleColumns.abstract && (
                     <th onClick={() => sortResults("abstract")}>
-                      Abstract{" "}                     {}
+                      Abstract {}
                       {sortConfig.key === "abstract"
                         ? sortConfig.direction === "ascending"
                           ? "↑"
@@ -479,10 +512,14 @@ const SearchArticles = () => {
                 {applyFilters(results).map((result) => (
                   <tr key={result._id}>
                     {visibleColumns.title && <td>{result.title}</td>}
-                    {visibleColumns.authors && <td>{result.authors.join(", ")}</td>}
+                    {visibleColumns.authors && (
+                      <td>{result.authors.join(", ")}</td>
+                    )}
                     {visibleColumns.claim && <td>{result.claim}</td>}
                     {visibleColumns.doi && <td>{result.doi}</td>}
-                    {visibleColumns.publication_year && <td>{result.publication_year}</td>}
+                    {visibleColumns.publication_year && (
+                      <td>{result.publication_year}</td>
+                    )}
                     {visibleColumns.abstract && <td>{result.abstract}</td>}
                   </tr>
                 ))}
