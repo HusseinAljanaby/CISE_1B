@@ -4,6 +4,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -43,6 +44,19 @@ export class UsersService {
     }
   }
 
+  async loginAdmin(): Promise<ReturnUserDto> {
+    const payload = { sub: 0, email: 'admin', role: 'ADMIN' };
+    const access_token = await this.jwtService.signAsync(payload);
+    return {
+      _id: 0,
+      first_name: 'ADMIN',
+      last_name: 'ADMIN',
+      email: 'ADMIN',
+      role: 'ADMIN',
+      access_token,
+    };
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<ReturnUserDto> {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(
@@ -72,5 +86,20 @@ export class UsersService {
     } else {
       throw new BadRequestException();
     }
+  }
+
+  async setRole(user_id: string, new_role: string): Promise<boolean> {
+    const user = await this.userModel.findById(user_id);
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    user.role = new_role;
+    await user.save();
+    return true;
+  }
+
+  async getUsers(): Promise<User[]> {
+    return await this.userModel.find();
   }
 }
