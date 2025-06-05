@@ -74,4 +74,16 @@ export class ArticleController {
     }
     return updated;
   }
+
+  @Put('/:id/analyse')
+  async analyse(
+    @Param('id') id: string,
+    @Body() updated_fields: Partial<Article>,
+  ): Promise<Article> {
+    const updated = await this.articleService.analyse(id, updated_fields);
+    if (!updated) {
+      throw new NotFoundException(`Cannot analyse: article ${id} not found`);
+    }
+    return updated;
+  }
 }

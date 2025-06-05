@@ -38,6 +38,7 @@ const SearchArticles = () => {
   const [yearFilter, setYearFilter] = useState<number | null>(null);
   const [showClaimFilter, setShowClaimFilter] = useState(false);
   const [showYearFilter, setShowYearFilter] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const [sortConfig, setSortConfig] = useState({
     key: "title" as keyof Article,
@@ -112,7 +113,9 @@ const SearchArticles = () => {
     } catch (error) {
       alert(error);
       console.error("Search error:", error);
+    } finally {
       setLoading(false);
+      setHasSearched(true);
     }
   };
 
@@ -347,6 +350,12 @@ const SearchArticles = () => {
             {loading ? "Searching..." : "Search"}
           </button>
         </form>
+
+        {!loading && hasSearched && results.length === 0 && (
+          <p style={{ marginTop: "1rem", fontStyle: "italic" }}>
+            No results found. Try adjusting your search criteria.
+          </p>
+        )}
 
         {results.length > 0 && (
           <div>

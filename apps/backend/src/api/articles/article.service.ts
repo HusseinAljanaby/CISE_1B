@@ -32,7 +32,7 @@ export class ArticleService {
       return await this.findRejected();
     }
 
-    if (query.approved == 'false') {
+    if (query.isApproved == 'false') {
       return await this.findAwaitingAnalysis();
     }
 
@@ -40,7 +40,7 @@ export class ArticleService {
     const filter: any = {
       isModerated: true,
       isRejected: false,
-      approved: true,
+      isApproved: true,
     };
 
     if (query.title) {
@@ -95,7 +95,7 @@ export class ArticleService {
 
   //analysis comes after moderation but before approval
   async findAwaitingAnalysis(): Promise<Article[]> {
-    return await this.articleModel.find({ approved: false, isModerated: true }).exec();
+    return await this.articleModel.find({ isModerated: true, isRejected: false, isApproved: false}).exec();
   }
 
   async findById(id: string): Promise<Article | null> {
@@ -116,5 +116,20 @@ export class ArticleService {
       { isModerated: false, isRejected: true },
       { new: true },
     );
+  }
+
+  async analyse(id: string, updated_fields: Partial<Article>): Promise<Article | null> {
+    const updated = await this.articleModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          ...updated_fields,
+        },
+        isApproved: true,
+      },
+      { new: true },
+    );
+  
+    return updated;
   }
 }
