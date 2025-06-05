@@ -20,10 +20,28 @@ export class ArticleService {
 
   async find(query: any): Promise<Article[]> {
     if (query.all === 'true' || Object.keys(query).length === 0) {
-      return await this.findAll();
+      return await this.findApproved();
+    }
+    //moderation/analysis handling
+
+    if (query.isModerated == 'false') {
+      return await this.findUnmoderated();
     }
 
-    const filter: any = {};
+    if (query.isRejected == 'true') {
+      return await this.findRejected();
+    }
+
+    if (query.approved == 'false') {
+      return await this.findAwaitingAnalysis();
+    }
+
+    //general handling
+    const filter: any = {
+      isModerated: true,
+      isRejected: false,
+      approved: true,
+    };
 
     if (query.title) {
       filter.title = { $regex: query.title, $options: 'i' };
@@ -52,19 +70,15 @@ export class ArticleService {
       filter.doi = query.doi;
     }
 
-    if (typeof query.isModerated !== 'undefined') {
-      filter.isModerated = query.isModerated === 'true';
-    }
-
-    if (typeof query.isRejected !== 'undefined') {
-      filter.isRejected = query.isRejected === 'true';
-    }
-
     return await this.articleModel.find(filter).exec();
   }
 
   async findAll(): Promise<Article[]> {
     return await this.articleModel.find().exec();
+  }
+
+  async findApproved(): Promise<Article[]> {
+    return await this.articleModel.find({ approved: true }).exec();
   }
 
   async findReviewed(): Promise<Article[]> {
@@ -77,6 +91,11 @@ export class ArticleService {
 
   async findRejected(): Promise<Article[]> {
     return await this.articleModel.find({ isRejected: true }).exec();
+  }
+
+  //analysis comes after moderation but before approval
+  async findAwaitingAnalysis(): Promise<Article[]> {
+    return await this.articleModel.find({ approved: false, isModerated: true }).exec();
   }
 
   async findById(id: string): Promise<Article | null> {

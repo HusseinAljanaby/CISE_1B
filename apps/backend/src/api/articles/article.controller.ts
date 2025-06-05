@@ -43,6 +43,11 @@ export class ArticleController {
     return await this.articleService.findRejected();
   }
 
+  @Get('/awaiting-analysis')
+  async findAwaitingAnalysis(): Promise<Article[]> {
+    return await this.articleService.findAwaitingAnalysis();
+  }
+
   @Get('/:id')
   async findById(@Param('id') id: string): Promise<Article> {
     const article = await this.articleService.findById(id);
