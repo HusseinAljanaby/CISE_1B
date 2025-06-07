@@ -344,8 +344,6 @@ const NewDiscussion = () => {
           value={method}
           onChange={(e) => setMethod(e.target.value)}
         />
-
-        <button className={formStyles.formItem} type="submit">
         <button className={formStyles.formButton} type="submit">
           Submit
         </button>
