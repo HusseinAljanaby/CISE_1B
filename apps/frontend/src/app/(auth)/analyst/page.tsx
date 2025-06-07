@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -40,7 +39,8 @@ export default function ApprovedArticlesPage() {
       try {
         const BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
         const res = await fetch(`${BASE}/api/articles/awaiting-analysis`);
-        if (!res.ok) throw new Error("Failed to fetch awaiting analysis articles");
+        if (!res.ok)
+          throw new Error("Failed to fetch awaiting analysis articles");
 
         const data: Article[] = await res.json();
         setAllArticles(data);
@@ -85,8 +85,7 @@ export default function ApprovedArticlesPage() {
                   {article.publication_year}
                 </div>
                 <div className="text-sm text-gray-600 mb-2">
-                  <span className="font-medium">Source:</span>{" "}
-                  {article.source}
+                  <span className="font-medium">Source:</span> {article.source}
                 </div>
               </div>
             ))}
