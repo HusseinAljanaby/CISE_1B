@@ -70,6 +70,22 @@ export class ArticleService {
       filter.doi = query.doi;
     }
 
+    if (query.practice) {
+      filter.practice = { $regex: query.practice, $options: 'i' };
+    }
+
+    if (query.claim) {
+      filter.claim = { $regex: query.claim, $options: 'i' };
+    }
+
+    if (typeof query.isModerated !== 'undefined') {
+      filter.isModerated = query.isModerated === 'true';
+    }
+
+    if (typeof query.isRejected !== 'undefined') {
+      filter.isRejected = query.isRejected === 'true';
+    }
+
     return await this.articleModel.find(filter).exec();
   }
 
@@ -82,11 +98,15 @@ export class ArticleService {
   }
 
   async findReviewed(): Promise<Article[]> {
-    return await this.articleModel.find({ isModerated: true, isRejected: false }).exec();
+    return await this.articleModel
+      .find({ isModerated: true, isRejected: false })
+      .exec();
   }
 
   async findUnmoderated(): Promise<Article[]> {
-    return await this.articleModel.find({ isModerated: false, isRejected: false }).exec();
+    return await this.articleModel
+      .find({ isModerated: false, isRejected: false })
+      .exec();
   }
 
   async findRejected(): Promise<Article[]> {

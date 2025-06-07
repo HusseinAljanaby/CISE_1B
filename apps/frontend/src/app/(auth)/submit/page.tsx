@@ -13,6 +13,11 @@ const NewDiscussion = () => {
   const [doi, setDoi] = useState("");
   const [abstractText, setAbstractText] = useState("");
   const [linkedDiscussion, setLinkedDiscussion] = useState("");
+  const [practice, setPractice] = useState("");
+  const [claim, setClaim] = useState("");
+  const [result, setResult] = useState("");
+  const [participantType, setParticipantType] = useState("");
+  const [method, setMethod] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const [bibtexInput, setBibtexInput] = useState(""); // New state for BibTeX input
@@ -161,6 +166,11 @@ const NewDiscussion = () => {
             doi,
             abstract: abstractText,
             linked_discussion: linkedDiscussion,
+            practice,
+            claim,
+            result,
+            participant_type: participantType,
+            method,
           }),
         }
       );
@@ -294,6 +304,48 @@ const NewDiscussion = () => {
           value={abstractText}
           onChange={(e) => setAbstractText(e.target.value)}
         />
+        <label htmlFor="practice">Practice:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          id="practice"
+          value={practice}
+          onChange={(e) => setPractice(e.target.value)}
+        />
+        <label htmlFor="claim">Claim:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          id="claim"
+          value={claim}
+          onChange={(e) => setClaim(e.target.value)}
+        />
+        <label htmlFor="result">Result:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          id="result"
+          value={result}
+          onChange={(e) => setResult(e.target.value)}
+        />
+        <label htmlFor="participantType">Participant Type:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          id="participantType"
+          value={participantType}
+          onChange={(e) => setParticipantType(e.target.value)}
+        />
+        <label htmlFor="method">Method:</label>
+        <input
+          className={formStyles.formItem}
+          type="text"
+          id="method"
+          value={method}
+          onChange={(e) => setMethod(e.target.value)}
+        />
+
+        <button className={formStyles.formItem} type="submit">
         <button className={formStyles.formButton} type="submit">
           Submit
         </button>
