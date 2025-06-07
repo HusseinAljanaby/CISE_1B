@@ -48,6 +48,9 @@ export class Article {
   @Prop({ default: false })
   isRejected: boolean;
 
+  @Prop({ default: false })
+  isApproved: boolean;
+
   @Prop({ default: Date.now })
   createdAt: Date;
 }

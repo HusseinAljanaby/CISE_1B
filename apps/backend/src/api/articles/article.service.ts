@@ -20,10 +20,28 @@ export class ArticleService {
 
   async find(query: any): Promise<Article[]> {
     if (query.all === 'true' || Object.keys(query).length === 0) {
-      return await this.findAll();
+      return await this.findApproved();
+    }
+    //moderation/analysis handling
+
+    if (query.isModerated == 'false') {
+      return await this.findUnmoderated();
     }
 
-    const filter: any = {};
+    if (query.isRejected == 'true') {
+      return await this.findRejected();
+    }
+
+    if (query.isApproved == 'false') {
+      return await this.findAwaitingAnalysis();
+    }
+
+    //general handling
+    const filter: any = {
+      isModerated: true,
+      isRejected: false,
+      isApproved: true,
+    };
 
     if (query.title) {
       filter.title = { $regex: query.title, $options: 'i' };
@@ -75,6 +93,10 @@ export class ArticleService {
     return await this.articleModel.find().exec();
   }
 
+  async findApproved(): Promise<Article[]> {
+    return await this.articleModel.find({ approved: true }).exec();
+  }
+
   async findReviewed(): Promise<Article[]> {
     return await this.articleModel
       .find({ isModerated: true, isRejected: false })
@@ -89,6 +111,11 @@ export class ArticleService {
 
   async findRejected(): Promise<Article[]> {
     return await this.articleModel.find({ isRejected: true }).exec();
+  }
+
+  //analysis comes after moderation but before approval
+  async findAwaitingAnalysis(): Promise<Article[]> {
+    return await this.articleModel.find({ isModerated: true, isRejected: false, isApproved: false}).exec();
   }
 
   async findById(id: string): Promise<Article | null> {
@@ -109,5 +136,20 @@ export class ArticleService {
       { isModerated: false, isRejected: true },
       { new: true },
     );
+  }
+
+  async analyse(id: string, updated_fields: Partial<Article>): Promise<Article | null> {
+    const updated = await this.articleModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          ...updated_fields,
+        },
+        isApproved: true,
+      },
+      { new: true },
+    );
+  
+    return updated;
   }
 }

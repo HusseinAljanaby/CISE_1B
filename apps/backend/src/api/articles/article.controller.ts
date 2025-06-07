@@ -43,6 +43,11 @@ export class ArticleController {
     return await this.articleService.findRejected();
   }
 
+  @Get('/awaiting-analysis')
+  async findAwaitingAnalysis(): Promise<Article[]> {
+    return await this.articleService.findAwaitingAnalysis();
+  }
+
   @Get('/:id')
   async findById(@Param('id') id: string): Promise<Article> {
     const article = await this.articleService.findById(id);
@@ -66,6 +71,18 @@ export class ArticleController {
     const updated = await this.articleService.reject(id);
     if (!updated) {
       throw new NotFoundException(`Cannot reject: article ${id} not found`);
+    }
+    return updated;
+  }
+
+  @Put('/:id/analyse')
+  async analyse(
+    @Param('id') id: string,
+    @Body() updated_fields: Partial<Article>,
+  ): Promise<Article> {
+    const updated = await this.articleService.analyse(id, updated_fields);
+    if (!updated) {
+      throw new NotFoundException(`Cannot analyse: article ${id} not found`);
     }
     return updated;
   }
